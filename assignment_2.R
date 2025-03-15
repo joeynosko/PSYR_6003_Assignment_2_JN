@@ -61,3 +61,17 @@ full_Hyp2 <- lm(NAf_mean~CON_mean + sex + SPP_mean, data = A2)
 reduced_Hyp2<- lm(NAf_mean~CON_mean + sex, data = A2)
 model.comparison(full_Hyp2, reduced_Hyp2)
 estimates(full_Hyp2)
+
+#creating tables for report
+#install.packages("apaTables")#to get package to make APA tables 
+library(apaTables)#I don't need to say what this does 
+
+apa.reg.table(full_Hyp1, filename = "table1.doc")#creating and saving regression table as .doc file
+
+#creating dataset with only means of the subscales to use in creating the correlation table
+A2_corr <- select(A2, SPP_mean, CON_mean, NAf_mean)
+view(A2_corr)
+
+apa.cor.table(A2_corr, filename = "table_corr2.doc")#creating and saving correlation table as .doc file. 
+
+count(A2, sex)#checking how many males and females are in the sample for the report. 
