@@ -29,5 +29,35 @@ A2 <- A2_Clean_MF %>%
   mutate(CON_mean = rowMeans(select(., tipm.CONS1.3y, tipm.CONS2.3y)))
 view(A2)
 
-#negative affect = b0 + b1*SPP + b2*NAf + b3*sex + e
-#negative affect = b0 + b2*NAf + b3*sex + e
+#######ANALYSES#######
+#visualize univariate distributions 
+library(patchwork)
+a = flexplot(sex~1, data = A2)
+b = flexplot(CON_mean~1, data = A2)
+c = flexplot(SPP_mean~1, data = A2)
+d = flexplot(NAf_mean~1, data = A2)
+a+b+c+d
+
+#visualize model
+flexplot(NAf_mean~SPP_mean | CON_mean + sex, data = A2, method = "lm")
+
+#generate AVP plot 
+added.plot(NAf_mean~SPP_mean, data = A2, lm_formula = NAf_mean~CON_mean + sex)
+
+#run the model 
+model <- lm(NAf_mean~SPP_mean + CON_mean + sex, data = A2)
+
+#check diagnostic plots to see if assumptions are met 
+visualize(model, plot = "residuals")
+
+#model comparison to see if SPP, CON, and sex are predictive of NAf
+full_Hyp1 <- lm(NAf_mean~CON_mean + sex + SPP_mean, data = A2)
+reduced_Hyp1 <- lm (NAf_mean~1, data = A2)
+model.comparison(full_Hyp1, reduced_Hyp1)
+estimates(full_Hyp1)
+
+#model comparison to see if SPP predicts NAf above and beyond sex and CON_mean
+full_Hyp2 <- lm(NAf_mean~CON_mean + sex + SPP_mean, data = A2)
+reduced_Hyp2<- lm(NAf_mean~CON_mean + sex, data = A2)
+model.comparison(full_Hyp2, reduced_Hyp2)
+estimates(full_Hyp2)
